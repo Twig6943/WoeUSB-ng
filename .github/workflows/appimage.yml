@@ -20,7 +20,7 @@ jobs:
           sudo apt update
           sudo apt install -y \
             python3-pip python3-venv python3-setuptools python3-wheel \
-            build-essential curl xz-utils patchelf \
+            build-essential wget xz-utils patchelf \
             libgtk-3-dev libjpeg-dev libtiff-dev libpng-dev libexpat1-dev libcurl4-openssl-dev \
             libx11-dev libxext-dev libxinerama-dev libxcursor-dev libxrandr-dev libxi-dev
 
@@ -28,22 +28,16 @@ jobs:
       - name: Make AppImage script executable
         run: chmod +x pkg/appimage.sh
 
-      # Step 4: Install prebuilt wxPython wheel
+      # Step 4: Install wxPython via wheel
       - name: Install wxPython
         run: |
           python3 -m pip install --upgrade pip setuptools wheel
 
-          WX_VERSION=4.2.3
-          PYTHON_TAG=cp312
-          WHEEL_FILE=wxPython-${WX_VERSION}-${PYTHON_TAG}-${PYTHON_TAG}-linux_x86_64.whl
-          WHEEL_URL=https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04/$WHEEL_FILE
+          # Download the correct wxPython wheel for Python 3.12
+          wget https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.3-cp312-cp312-linux_x86_64.whl
 
-          # Download wheel and verify file size
-          curl -L -o $WHEEL_FILE $WHEEL_URL
-          ls -lh $WHEEL_FILE
-
-          # Install wxPython from wheel
-          python3 -m pip install $WHEEL_FILE
+          # Install wxPython
+          python3 -m pip install wxpython-4.2.3-cp312-cp312-linux_x86_64.whl
 
       # Step 5: Run AppImage build
       - name: Build AppImage
