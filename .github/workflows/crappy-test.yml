@@ -23,7 +23,7 @@ jobs:
             build-essential wget xz-utils patchelf \
             libgtk-3-dev libjpeg-dev libtiff-dev libpng-dev libexpat1-dev libcurl4-openssl-dev \
             libx11-dev libxext-dev libxinerama-dev libxcursor-dev libxrandr-dev libxi-dev \
-            libfuse3-dev fuse3
+            libfuse3-dev libfuse2
 
       # Step 3: Make AppImage script executable
       - name: Make AppImage script executable
