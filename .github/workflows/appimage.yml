@@ -27,6 +27,8 @@ jobs:
             python-setuptools \
             python-wheel \
             python-wxpython \
+            python-build \ 
+            python-pip \
             wget \
             xz \
             patchelf \
