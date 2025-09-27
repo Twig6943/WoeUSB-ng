@@ -26,7 +26,9 @@ wget -O "wxpython-4.2.3-cp312-cp312-linux_x86_64.whl" \
 python3 -m installer --prefix="../AppDir/usr" "wxpython-4.2.3-cp312-cp312-linux_x86_64.whl"
 
 # Install remaining Python build tools
-pip install setuptools wheel build termcolor wxpython
+pip install setuptools wheel build termcolor 
+
+#wxpython
 
 # Step 3: Build wheel and install into AppDir/usr
 python3 -m build --wheel --no-isolation
