@@ -7,7 +7,6 @@ PKGVERS="0.2.12"
 APPIMAGE_NAME="WoeUSB-ng-x86_64.AppImage"
 SRC_URL="https://github.com/WoeUSB/WoeUSB-ng/archive/v$PKGVERS.tar.gz"
 PATCH_URL="https://gitlab.com/chaotic-aur/pkgbuilds/-/raw/main/woeusb-ng/pr79.patch"
-POLICY_URL="https://gitlab.com/chaotic-aur/pkgbuilds/-/raw/main/woeusb-ng/com.github.woeusb.woeusb-ng.policy"
 WORKDIR="$(pwd)/$PKGNAME-build"
 APPDIR="$WORKDIR/AppDir"
 SHARUN="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/heads/main/useful-tools/quick-sharun.sh"
@@ -18,11 +17,10 @@ rm -rf "$WORKDIR"
 mkdir -p "$WORKDIR"
 mkdir -p "$APPDIR/usr"
 
-# Step 1: Download source, patch, and policy
+# Step 1: Download source, patch
 cd "$WORKDIR"
 wget -O "$PKGNAME-$PKGVERS.tar.gz" "$SRC_URL"
 wget -O pr79.patch "$PATCH_URL"
-wget -O com.github.woeusb.woeusb-ng.policy "$POLICY_URL"
 tar -xzf "$PKGNAME-$PKGVERS.tar.gz"
 
 # Step 2: Apply patch
@@ -56,7 +54,7 @@ cp miscellaneous/WoeUSB-ng.desktop "$APPDIR/usr/share/applications/"
 chmod 755 "$APPDIR/usr/share/applications/WoeUSB-ng.desktop"
 
 mkdir -p "$APPDIR/usr/share/polkit-1/actions"
-cp ../com.github.woeusb.woeusb-ng.policy "$APPDIR/usr/share/polkit-1/actions/"
+cp miscellaneous/com.github.woeusb.woeusb-ng.policy "$APPDIR/usr/share/polkit-1/actions/"
 
 # Step 5: Create AppRun launcher
 cat > "$APPDIR/AppRun" << 'EOF'
