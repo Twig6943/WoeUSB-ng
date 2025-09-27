@@ -28,20 +28,9 @@ jobs:
       - name: Make AppImage script executable
         run: chmod +x pkg/am-test.sh
 
-      # Step 4: Install wxPython via wheel
-      - name: Install wxPython
-        run: |
-          python3 -m pip install --upgrade pip setuptools wheel
-
-          # Download the correct wxPython wheel for Python 3.12
-          wget https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.3-cp312-cp312-linux_x86_64.whl
-
-          # Install wxPython
-          python3 -m pip install wxpython-4.2.3-cp312-cp312-linux_x86_64.whl
-
       # Step 5: Run AppImage build
       - name: Build AppImage
-        run: pkg/am-test.sh
+        run: pkg/appimage.sh
 
       # Step 6: Upload resulting AppImage
       - name: Upload AppImage
