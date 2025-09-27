@@ -1,0 +1,38 @@
+name: Build WoeUSB-ng AppImage
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-appimage:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      # Step 2: Install dependencies
+      - name: Install build dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y \
+            python3-pip python3-venv python3-setuptools python3-wheel \
+            wget patchelf build-essential curl xz-utils
+
+      # Step 3: Make script executable
+      - name: Make AppImage script executable
+        run: chmod +x pkg/appimage.sh
+
+      # Step 4: Run AppImage build
+      - name: Build AppImage
+        run: pkg/appimage.sh
+
+      # Step 5: Upload artifact
+      - name: Upload AppImage
+        uses: actions/upload-artifact@v3
+        with:
+          name: woeusb-ng-appimage
+          path: |
+            pkg/woeusb-ng-build/WoeUSB-ng-x86_64.AppImage
