@@ -35,13 +35,19 @@ cd "$sharun_temp"
 cp -r "$WORKDIR/$PKGNAME-$PKGVERS" .
 cd "$PKGNAME-$PKGVERS"
 
-# Install dependencies and build wheel in isolated environment
+# Download sharun
 wget --retry-connrefused --tries=10 "$SHARUN" -O ./quick-sharun
 chmod +x ./quick-sharun
+
+# Run sharun with proper working directory and Python build
+# Ensures AppDir/usr exists first
+mkdir -p "$APPDIR/usr"
 ./quick-sharun bash -c "
+  set -e
+  export APPDIR='$APPDIR'
   python3 -m pip install --upgrade pip setuptools wheel build installer termcolor wxPython &&
   python3 -m build --wheel --no-isolation &&
-  python3 -m installer --destdir='$APPDIR/usr' dist/*.whl
+  python3 -m installer --destdir='\$APPDIR/usr' dist/*.whl
 "
 
 # Step 4: Install desktop file and policy
