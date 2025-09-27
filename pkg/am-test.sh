@@ -10,6 +10,8 @@ PATCH_URL="https://gitlab.com/chaotic-aur/pkgbuilds/-/raw/main/woeusb-ng/pr79.pa
 POLICY_URL="https://gitlab.com/chaotic-aur/pkgbuilds/-/raw/main/woeusb-ng/com.github.woeusb.woeusb-ng.policy"
 WORKDIR="$(pwd)/$PKGNAME-build"
 APPDIR="$WORKDIR/AppDir"
+SHARUN="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/heads/main/useful-tools/quick-sharun.sh"
+URUNTIME="https://raw.githubusercontent.com/pkgforge-dev/Anylinux-AppImages/refs/heads/main/useful-tools/uruntime2appimage.sh"
 
 # Clean previous build
 rm -rf "$WORKDIR"
@@ -28,15 +30,21 @@ cd "$PKGNAME-$PKGVERS"
 patch --forward --strip=1 < ../pr79.patch || true
 
 # Step 3: Build wheel using sharun
-# Install dependencies and build in an isolated environment
-sharun python3 -m pip install --upgrade pip setuptools wheel build installer termcolor wxPython
-sharun python3 -m build --wheel --no-isolation
+sharun_temp=$(mktemp -d)
+cd "$sharun_temp"
+cp -r "$WORKDIR/$PKGNAME-$PKGVERS" .
+cd "$PKGNAME-$PKGVERS"
 
-# Step 4: Install wheel into AppDir using sharun installer
-mkdir -p "$APPDIR/usr"
-sharun python3 -m installer --destdir="$APPDIR/usr" dist/*.whl
+# Install dependencies and build wheel in isolated environment
+wget --retry-connrefused --tries=10 "$SHARUN" -O ./quick-sharun
+chmod +x ./quick-sharun
+./quick-sharun bash -c "
+  python3 -m pip install --upgrade pip setuptools wheel build installer termcolor wxPython &&
+  python3 -m build --wheel --no-isolation &&
+  python3 -m installer --destdir='$APPDIR/usr' dist/*.whl
+"
 
-# Step 5: Install desktop file and policy
+# Step 4: Install desktop file and policy
 mkdir -p "$APPDIR/usr/share/applications"
 cp miscellaneous/WoeUSB-ng.desktop "$APPDIR/usr/share/applications/"
 chmod 755 "$APPDIR/usr/share/applications/WoeUSB-ng.desktop"
@@ -44,7 +52,7 @@ chmod 755 "$APPDIR/usr/share/applications/WoeUSB-ng.desktop"
 mkdir -p "$APPDIR/usr/share/polkit-1/actions"
 cp ../com.github.woeusb.woeusb-ng.policy "$APPDIR/usr/share/polkit-1/actions/"
 
-# Step 6: Create AppRun launcher
+# Step 5: Create AppRun launcher
 cat > "$APPDIR/AppRun" << 'EOF'
 #!/bin/bash
 HERE="$(dirname "$(readlink -f "${0}")")"
@@ -54,13 +62,13 @@ exec "$HERE/usr/bin/woeusb" "$@"
 EOF
 chmod +x "$APPDIR/AppRun"
 
-# Step 7: (Optional) copy icon if available
+# Step 6: (Optional) copy icon if available
 # mkdir -p "$APPDIR/usr/share/icons/hicolor/256x256/apps"
 # cp path/to/icon.png "$APPDIR/usr/share/icons/hicolor/256x256/apps/WoeUSB-ng.png"
 
-# Step 8: Download AppImageTool and build AppImage
-wget -O appimagetool.AppImage https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
-chmod +x appimagetool.AppImage
-./appimagetool.AppImage "$APPDIR"
+# Step 7: Build AppImage with uruntime
+wget --retry-connrefused --tries=10 "$URUNTIME" -O ./uruntime2appimage
+chmod +x ./uruntime2appimage
+./uruntime2appimage "$APPDIR"
 
 echo "✅ AppImage created: $WORKDIR/$APPIMAGE_NAME"
