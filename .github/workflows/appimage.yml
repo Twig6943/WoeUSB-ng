@@ -28,16 +28,22 @@ jobs:
       # Step 3: Make AppImage script executable
       - name: Make AppImage script executable
         run: |
-          python --version
-          python3 --version
           chmod +x pkg/appimage.sh
 
       # Step 4: Install prebuilt wxPython wheel
       - name: Install wxPython
         run: |
           python3 -m pip install --upgrade pip setuptools wheel
-          curl -L -o wxPython-4.2.1-cp310-cp310-linux_x86_64.whl https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04/wxpython-4.2.3-cp312-cp312-linux_x86_64.whl
-          python3 -m pip install wxpython-4.2.3-cp312-cp312-linux_x86_64.whl
+
+          # Set wxPython version and wheel filename
+          WX_VERSION=4.2.3
+          PYTHON_TAG=cp312
+          WHEEL_FILE=wxPython-${WX_VERSION}-${PYTHON_TAG}-${PYTHON_TAG}-linux_x86_64.whl
+
+          # Download and install the wheel
+          curl -L -o $WHEEL_FILE \
+            https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04/$WHEEL_FILE
+          python3 -m pip install $WHEEL_FILE
 
       # Step 5: Run AppImage build
       - name: Build AppImage
