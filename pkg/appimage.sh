@@ -12,9 +12,11 @@ cd "WoeUSB-ng"
 wget -O "pr79.patch" "https://gitlab.com/chaotic-aur/pkgbuilds/-/raw/main/woeusb-ng/pr79.patch"
 patch --forward --strip=1 < pr79.patch || true
 
-# Step 2: Install build tools into AppDir/usr
-python3 -m pip install --upgrade pip --break-system-packages
-python3 -m pip install --break-system-packages --prefix="../AppDir/usr" setuptools wheel build installer termcolor
+# Step 2: Create a virtual environment for build tools
+python3 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+pip install setuptools wheel build installer termcolor
 
 # Step 3: Build wheel and install into AppDir/usr
 python3 -m build --wheel --no-isolation
@@ -24,6 +26,9 @@ python3 -m installer --prefix="../AppDir/usr" dist/*.whl
 wget -O "wxpython-4.2.3-cp312-cp312-linux_x86_64.whl" \
 "https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.3-cp312-cp312-linux_x86_64.whl"
 python3 -m installer --prefix="../AppDir/usr" "wxpython-4.2.3-cp312-cp312-linux_x86_64.whl"
+
+# Done with build tools, deactivate venv
+deactivate
 
 # Step 5: Copy desktop file (ensure valid location for AppImage)
 if [ ! -f "miscellaneous/WoeUSB-ng.desktop" ]; then
@@ -52,7 +57,7 @@ cat > "../AppDir/AppRun" << 'EOF'
 #!/bin/bash
 HERE="$(dirname "$(readlink -f "${0}")")"
 export PYTHONPATH="$HERE/usr/lib/python3.12/site-packages:$PYTHONPATH"
-exec python3 /usr/bin/woeusbgui "$@"
+exec python3 "$HERE/usr/bin/woeusbgui" "$@"
 EOF
 chmod +x "../AppDir/AppRun"
 
