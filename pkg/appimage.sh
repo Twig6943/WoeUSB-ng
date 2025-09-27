@@ -31,7 +31,9 @@ patch --forward --strip=1 < ../pr79.patch || true
 python3 -m venv venv
 source venv/bin/activate
 pip install --upgrade pip
-pip install wxPython termcolor build installer wheel setuptools
+pip install termcolor build installer wheel setuptools
+
+#wxPython
 
 # Step 4: Build the wheel
 python -m build --wheel --no-isolation
