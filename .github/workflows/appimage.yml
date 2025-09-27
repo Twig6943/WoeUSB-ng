@@ -16,6 +16,8 @@ jobs:
       # Step 2: Install build dependencies
       - name: Install build dependencies
         run: |
+          python --version
+          python3 --version
           sudo apt update
           sudo apt install -y \
             python3-pip python3-venv python3-setuptools python3-wheel \
