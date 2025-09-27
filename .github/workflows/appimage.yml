@@ -7,21 +7,23 @@ jobs:
   build-appimage:
     runs-on: ubuntu-latest
     steps:
-      # Step 1: Checkout repo
+      # Step 1: Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           submodules: recursive
 
-      # Step 2: Install dependencies
+      # Step 2: Install build dependencies
       - name: Install build dependencies
         run: |
           sudo apt update
           sudo apt install -y \
             python3-pip python3-venv python3-setuptools python3-wheel \
-            wget patchelf build-essential curl xz-utils
+            build-essential curl xz-utils patchelf \
+            libgtk-3-dev libjpeg-dev libtiff-dev libpng-dev libexpat1-dev libcurl4-openssl-dev \
+            libx11-dev libxext-dev libxinerama-dev libxcursor-dev libxrandr-dev libxi-dev
 
-      # Step 3: Make script executable
+      # Step 3: Make AppImage script executable
       - name: Make AppImage script executable
         run: chmod +x pkg/appimage.sh
 
@@ -29,10 +31,9 @@ jobs:
       - name: Build AppImage
         run: pkg/appimage.sh
 
-      # Step 5: Upload artifact
+      # Step 5: Upload resulting AppImage
       - name: Upload AppImage
         uses: actions/upload-artifact@v4
         with:
           name: woeusb-ng-appimage
-          path: |
-            pkg/woeusb-ng-build/WoeUSB-ng-x86_64.AppImage
+          path: pkg/woeusb-ng-build/WoeUSB-ng-x86_64.AppImage
