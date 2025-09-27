@@ -34,23 +34,36 @@ source "$APPDIR/usr/venv/bin/activate"
 # Upgrade pip and install dependencies
 pip install --upgrade pip setuptools wheel build installer termcolor
 
-#wxPython
-
 # Step 4: Build wheel and install into AppDir
 python -m build --wheel --no-isolation
-wget https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.3-cp312-cp312-linux_x86_64.whl
-python -m installer --destdir="$APPDIR/usr" wxpython-4.2.3-cp312-cp312-linux_x86_64.whl
+
+# Install wxPython
+WX_WHL="wxpython-4.2.3-cp312-cp312-linux_x86_64.whl"
+wget -O "$WX_WHL" https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/$WX_WHL
+python -m installer --destdir="$APPDIR/usr" "$WX_WHL"
 python -m installer --destdir="$APPDIR/usr" dist/*.whl
 
 deactivate
 
 # Step 5: Install desktop file and polkit policy
+DESKTOP_SRC="$WORKDIR/$PKGNAME-$PKGVERS/miscellaneous/WoeUSB-ng.desktop"
+if [ ! -f "$DESKTOP_SRC" ]; then
+    echo "Error: Desktop file not found at $DESKTOP_SRC"
+    exit 1
+fi
+
 mkdir -p "$APPDIR/usr/share/applications"
-cp miscellaneous/WoeUSB-ng.desktop "$APPDIR/usr/share/applications/"
+cp "$DESKTOP_SRC" "$APPDIR/usr/share/applications/"
 chmod 755 "$APPDIR/usr/share/applications/WoeUSB-ng.desktop"
 
+POLICY_SRC="$WORKDIR/com.github.woeusb.woeusb-ng.policy"
+if [ ! -f "$POLICY_SRC" ]; then
+    echo "Error: Polkit policy file not found at $POLICY_SRC"
+    exit 1
+fi
+
 mkdir -p "$APPDIR/usr/share/polkit-1/actions"
-cp ../com.github.woeusb.woeusb-ng.policy "$APPDIR/usr/share/polkit-1/actions/"
+cp "$POLICY_SRC" "$APPDIR/usr/share/polkit-1/actions/"
 
 # Step 6: Create AppRun launcher
 cat > "$APPDIR/AppRun" << 'EOF'
@@ -61,6 +74,12 @@ export PYTHONPATH="$HERE/usr/lib/python3.12/site-packages:$PYTHONPATH"
 exec "$HERE/usr/venv/bin/woeusb" "$@"
 EOF
 chmod +x "$APPDIR/AppRun"
+
+# Verify AppRun exists
+if [ ! -x "$APPDIR/AppRun" ]; then
+    echo "Error: AppRun launcher is missing or not executable"
+    exit 1
+fi
 
 # Step 7: (Optional) copy icon
 # mkdir -p "$APPDIR/usr/share/icons/hicolor/256x256/apps"
