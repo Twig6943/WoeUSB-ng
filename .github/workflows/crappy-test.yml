@@ -26,15 +26,15 @@ jobs:
 
       # Step 3: Make AppImage script executable
       - name: Make AppImage script executable
-        run: chmod +x pkg/appimage.sh
+        run: chmod +x pkg/appimage-sharun.sh
 
       # Step 5: Run AppImage build
       - name: Build AppImage
-        run: pkg/appimage.sh
+        run: pkg/appimage-sharun.sh
 
       # Step 6: Upload resulting AppImage
       - name: Upload AppImage
         uses: actions/upload-artifact@v4
         with:
           name: woeusb-ng-appimage
-          path: pkg/woeusb-ng-build/WoeUSB-ng-x86_64.AppImage
+          path: WoeUSB-ng/WoeUSB-ng-build/*.AppImage
