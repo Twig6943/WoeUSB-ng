@@ -1,4 +1,4 @@
-name: Build WoeUSB-ng AppImage
+name: Build WoeUSB-ng AppImage (AppImageTool)
 
 on:
   workflow_dispatch:
