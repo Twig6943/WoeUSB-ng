@@ -1,8 +1,10 @@
 #!/usr/bin/env xdg-open
 [Desktop Entry]
 Name=WoeUSB-ng
+Comment=Create your own USB stick windows installer from an ISO image or a real DVD.
 Exec=woeusbgui
-Icon=/usr/share/icons/WoeUSB-ng/icon.ico
+Icon=woeusb-logo
 Terminal=false
 Type=Application
 Categories=Utility;
+StartupNotify=true
