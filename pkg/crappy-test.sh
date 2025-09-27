@@ -32,7 +32,9 @@ python3 -m venv "$APPDIR/usr/venv"
 source "$APPDIR/usr/venv/bin/activate"
 
 # Upgrade pip and install dependencies
-pip install --upgrade pip setuptools wheel build wxPython installer termcolor
+pip install --upgrade pip setuptools wheel build installer termcolor
+
+#wxPython
 
 # Step 4: Build wheel and install into AppDir
 python -m build --wheel --no-isolation
