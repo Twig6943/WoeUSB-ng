@@ -39,8 +39,8 @@ pip install --upgrade pip setuptools wheel build installer termcolor
 # Step 4: Build wheel and install into AppDir
 python -m build --wheel --no-isolation
 wget https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.3-cp312-cp312-linux_x86_64.whl
-
-python -m installer --destdir="$APPDIR/usr" dist/*.whl wxpython-4.2.3-cp312-cp312-linux_x86_64.whl
+python -m installer --destdir="$APPDIR/usr" wxpython-4.2.3-cp312-cp312-linux_x86_64.whl
+python -m installer --destdir="$APPDIR/usr" dist/*.whl
 
 deactivate
 
