@@ -26,7 +26,7 @@ jobs:
 
       # Step 3: Make AppImage script executable
       - name: Make AppImage script executable
-        run: chmod +x pkg/appimage.sh
+        run: chmod +x pkg/am-test.sh
 
       # Step 4: Install wxPython via wheel
       - name: Install wxPython
@@ -41,7 +41,7 @@ jobs:
 
       # Step 5: Run AppImage build
       - name: Build AppImage
-        run: pkg/appimage.sh
+        run: pkg/am-test.sh
 
       # Step 6: Upload resulting AppImage
       - name: Upload AppImage
