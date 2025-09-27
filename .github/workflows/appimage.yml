@@ -13,25 +13,37 @@ jobs:
         with:
           submodules: recursive
 
-      # Step 2: Install build dependencies
+      # Step 2: Setup Python 3.10 (prebuilt wxPython wheels exist)
+      - name: Setup Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      # Step 3: Install system build dependencies
       - name: Install build dependencies
         run: |
           sudo apt update
           sudo apt install -y \
-            python3-pip python3-venv python3-setuptools python3-wheel \
             build-essential curl xz-utils patchelf \
             libgtk-3-dev libjpeg-dev libtiff-dev libpng-dev libexpat1-dev libcurl4-openssl-dev \
             libx11-dev libxext-dev libxinerama-dev libxcursor-dev libxrandr-dev libxi-dev
 
-      # Step 3: Make AppImage script executable
+      # Step 4: Install Python packages (prebuilt wheels)
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          python -m pip install --prefix=$HOME/.local --only-binary=:all: \
+            wxPython termcolor build installer
+
+      # Step 5: Make AppImage script executable
       - name: Make AppImage script executable
         run: chmod +x pkg/appimage.sh
 
-      # Step 4: Run AppImage build
+      # Step 6: Run AppImage build
       - name: Build AppImage
         run: pkg/appimage.sh
 
-      # Step 5: Upload resulting AppImage
+      # Step 7: Upload resulting AppImage
       - name: Upload AppImage
         uses: actions/upload-artifact@v4
         with:
