@@ -27,7 +27,7 @@ jobs:
 
       # Step 3: Make AppImage script executable
       - name: Make AppImage script executable
-        run: chmod +x pkg/am-test.sh
+        run: chmod +x pkg/crappy-test.sh
 
       # Step 4: Install wxPython via wheel
       - name: Install wxPython
