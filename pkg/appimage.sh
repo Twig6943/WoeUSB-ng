@@ -16,16 +16,16 @@ patch --forward --strip=1 < pr79.patch || true
 python3 -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip
-pip install setuptools wheel build installer termcolor
+pip install setuptools wheel build installer termcolor wxpython
 
 # Step 3: Build wheel and install into AppDir/usr
 python3 -m build --wheel --no-isolation
 python3 -m installer --prefix="../AppDir/usr" dist/*.whl
 
 # Step 4: Install wxPython manually into AppDir/usr
-wget -O "wxpython-4.2.3-cp312-cp312-linux_x86_64.whl" \
-"https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.3-cp312-cp312-linux_x86_64.whl"
-python3 -m installer --prefix="../AppDir/usr" "wxpython-4.2.3-cp312-cp312-linux_x86_64.whl"
+# wget -O "wxpython-4.2.3-cp312-cp312-linux_x86_64.whl" \
+# "https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.3-cp312-cp312-linux_x86_64.whl"
+# python3 -m installer --prefix="../AppDir/usr" "wxpython-4.2.3-cp312-cp312-linux_x86_64.whl"
 
 # Done with build tools, deactivate venv
 deactivate
