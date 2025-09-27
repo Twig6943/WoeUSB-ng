@@ -1,4 +1,4 @@
-name: Build WoeUSB-ng AppImage
+name: Build WoeUSB-ng AppImage (Sharun)
 
 on:
   workflow_dispatch:
@@ -13,30 +13,24 @@ jobs:
         with:
           submodules: recursive
 
-      # Step 2: Install build dependencies including libfuse3
+      # Step 2: Install build dependencies
       - name: Install build dependencies
         run: |
           python3 --version
           sudo apt update
           sudo apt install -y \
-            python3-pip python3-venv python3-setuptools python3-wheel \
+            python3-pip python3-venv python3-setuptools python3-wheel python3-build \
             build-essential wget xz-utils patchelf \
             libgtk-3-dev libjpeg-dev libtiff-dev libpng-dev libexpat1-dev libcurl4-openssl-dev \
-            libx11-dev libxext-dev libxinerama-dev libxcursor-dev libxrandr-dev libxi-dev \
-            libfuse3-dev libfuse2
+            libx11-dev libxext-dev libxinerama-dev libxcursor-dev libxrandr-dev libxi-dev
 
       # Step 3: Make AppImage script executable
       - name: Make AppImage script executable
-        run: chmod +x pkg/crappy-test.sh
-
-      # Step 4: Install wxPython via wheel
-      - name: Install wxPython
-        run: |
-          python3 -m pip install --upgrade pip setuptools wheel
+        run: chmod +x pkg/appimage.sh
 
       # Step 5: Run AppImage build
       - name: Build AppImage
-        run: pkg/crappy-test.sh
+        run: pkg/appimage.sh
 
       # Step 6: Upload resulting AppImage
       - name: Upload AppImage
