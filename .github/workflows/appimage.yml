@@ -37,4 +37,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: woeusb-ng-appimage
-          path: pkg/woeusb-ng-build/WoeUSB-ng-x86_64.AppImage
+          path: WoeUSB-ng/WoeUSB-ng-build/*.AppImage
