@@ -27,16 +27,16 @@ jobs:
       - name: Make AppImage script executable
         run: chmod +x pkg/appimage.sh
 
-      # Step 4: Download prebuilt wxPython and WoeUSB-ng wheel
-      - name: Download prebuilt wheels
+      # Step 4: Install prebuilt wxPython wheel
+      - name: Install wxPython
         run: |
-          mkdir -p pkg/wheels
-          curl -L -o pkg/wheels/woeusb_ng-0.2.12-py3-none-any.whl https://github.com/Twig6943/WoeUSB-ng/raw/refs/heads/master/pkg/woeusb_ng-0.2.12-py3-none-any.whl
-          curl -L -o pkg/wheels/wxPython-4.2.1-cp310-cp310-linux_x86_64.whl https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04/wxPython-4.2.1-cp310-cp310-linux_x86_64.whl
+          python3 -m pip install --upgrade pip setuptools wheel
+          curl -L -o wxPython-4.2.1-cp310-cp310-linux_x86_64.whl https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-20.04/wxPython-4.2.1-cp310-cp310-linux_x86_64.whl
+          python3 -m pip install wxPython-4.2.1-cp310-cp310-linux_x86_64.whl
 
-      # Step 5: Run AppImage build using prebuilt wheels
+      # Step 5: Run AppImage build
       - name: Build AppImage
-        run: pkg/appimage.sh pkg/wheels
+        run: pkg/appimage.sh
 
       # Step 6: Upload resulting AppImage
       - name: Upload AppImage
