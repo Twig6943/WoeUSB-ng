@@ -16,9 +16,7 @@ jobs:
 
       - name: Refresh pacman DB and install build dependencies
         run: |
-          # pacman runs as root inside the container; --noconfirm to avoid prompts
           pacman -Syu --noconfirm
-
           pacman -S --noconfirm \
             base-devel \
             python \
@@ -46,9 +44,6 @@ jobs:
             libxi \
             fuse2 \
             git
-
-          # upgrade pip and install python build tools that Debian provided via apt
-          pip install --upgrade pip build
 
       - name: Make AppImage script executable
         run: chmod +x pkg/appimage.sh
