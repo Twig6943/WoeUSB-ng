@@ -27,35 +27,42 @@ tar -xzf "$PKGNAME-$PKGVERS.tar.gz"
 cd "$PKGNAME-$PKGVERS"
 patch --forward --strip=1 < ../pr79.patch || true
 
-# Step 3: Build and install WoeUSB-ng to AppDir/usr
-mkdir build
-cd build
-cmake .. -DCMAKE_INSTALL_PREFIX="$APPDIR/usr"
-make -j"$(nproc)"
-make install
+# Step 3: Create Python virtualenv inside AppDir
+python3 -m venv "$APPDIR/usr/venv"
+source "$APPDIR/usr/venv/bin/activate"
 
-# Step 4: Install desktop file and policy
+# Upgrade pip and install dependencies
+pip install --upgrade pip setuptools wheel build wxPython installer termcolor
+
+# Step 4: Build wheel and install into AppDir
+python -m build --wheel --no-isolation
+python -m installer --destdir="$APPDIR/usr" dist/*.whl
+
+deactivate
+
+# Step 5: Install desktop file and polkit policy
 mkdir -p "$APPDIR/usr/share/applications"
-cp ../miscellaneous/WoeUSB-ng.desktop "$APPDIR/usr/share/applications/"
+cp miscellaneous/WoeUSB-ng.desktop "$APPDIR/usr/share/applications/"
 chmod 755 "$APPDIR/usr/share/applications/WoeUSB-ng.desktop"
 
 mkdir -p "$APPDIR/usr/share/polkit-1/actions"
 cp ../com.github.woeusb.woeusb-ng.policy "$APPDIR/usr/share/polkit-1/actions/"
 
-# Step 5: Create AppRun launcher
+# Step 6: Create AppRun launcher
 cat > "$APPDIR/AppRun" << 'EOF'
 #!/bin/bash
 HERE="$(dirname "$(readlink -f "${0}")")"
-export PATH="$HERE/usr/bin:$PATH"
-exec "$HERE/usr/bin/woeusb" "$@"
+export PATH="$HERE/usr/venv/bin:$PATH"
+export PYTHONPATH="$HERE/usr/lib/python3.12/site-packages:$PYTHONPATH"
+exec "$HERE/usr/venv/bin/woeusb" "$@"
 EOF
 chmod +x "$APPDIR/AppRun"
 
-# Step 6: (Optional) copy icon
+# Step 7: (Optional) copy icon
 # mkdir -p "$APPDIR/usr/share/icons/hicolor/256x256/apps"
 # cp path/to/icon.png "$APPDIR/usr/share/icons/hicolor/256x256/apps/WoeUSB-ng.png"
 
-# Step 7: Download AppImageTool and build AppImage
+# Step 8: Download AppImageTool and build AppImage
 cd "$WORKDIR"
 wget -O appimagetool-x86_64.AppImage https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage
 chmod +x appimagetool-x86_64.AppImage
