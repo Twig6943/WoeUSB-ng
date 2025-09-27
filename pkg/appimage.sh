@@ -17,12 +17,16 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip
 
+# Install installer before using it
+pip install installer
+
 # Step 4: Install wxPython manually into AppDir/usr
 wget -O "wxpython-4.2.3-cp312-cp312-linux_x86_64.whl" \
 "https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.3-cp312-cp312-linux_x86_64.whl"
 python3 -m installer --prefix="../AppDir/usr" "wxpython-4.2.3-cp312-cp312-linux_x86_64.whl"
 
-pip install setuptools wheel build installer termcolor wxpython
+# Install remaining Python build tools
+pip install setuptools wheel build termcolor wxpython
 
 # Step 3: Build wheel and install into AppDir/usr
 python3 -m build --wheel --no-isolation
