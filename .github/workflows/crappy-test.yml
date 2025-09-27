@@ -34,12 +34,6 @@ jobs:
         run: |
           python3 -m pip install --upgrade pip setuptools wheel
 
-          # Download the correct wxPython wheel for Python 3.12
-          wget https://extras.wxpython.org/wxPython4/extras/linux/gtk3/ubuntu-24.04/wxpython-4.2.3-cp312-cp312-linux_x86_64.whl
-
-          # Install wxPython
-          python3 -m pip install wxpython-4.2.3-cp312-cp312-linux_x86_64.whl
-
       # Step 5: Run AppImage build
       - name: Build AppImage
         run: pkg/crappy-test.sh
