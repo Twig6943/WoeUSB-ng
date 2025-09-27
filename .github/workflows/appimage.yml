@@ -25,7 +25,10 @@ jobs:
 
       # Step 3: Make AppImage script executable
       - name: Make AppImage script executable
-        run: chmod +x pkg/appimage.sh
+        run: |
+        python --version
+        python3 --version
+        chmod +x pkg/appimage.sh
 
       # Step 4: Install prebuilt wxPython wheel
       - name: Install wxPython
