@@ -3,7 +3,7 @@ set -e
 
 # Remove any previous build
 rm -rf "./WoeUSB-ng-build"
-mkdir -p "./WoeUSB-ng-build/AppDir/usr"
+mkdir -p "./WoeUSB-ng-build/AppDir/usr/bin"
 
 # Step 1: Clone repository and apply patch
 cd "./WoeUSB-ng-build"
@@ -21,10 +21,15 @@ pip install --upgrade pip installer setuptools wheel build termcolor
 python3 -m build --wheel --no-isolation
 python3 -m installer --prefix="../AppDir/usr" dist/*.whl
 
-# Step 3b: Ensure WoeUSB sources are copied (fixes missing module issue)
+# Step 3b: Ensure WoeUSB sources are copied (fix missing module issue)
 PYVER=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
-mkdir -p "../AppDir/usr/lib/python${PYVER}/site-packages/WoeUSB"
-cp -r src/WoeUSB/* "../AppDir/usr/lib/python${PYVER}/site-packages/WoeUSB/"
+mkdir -p "../AppDir/usr/lib/python${PYVER}/site-packages/"
+cp -r src/WoeUSB "../AppDir/usr/lib/python${PYVER}/site-packages/"
+
+# Step 3c: Copy woeusbgui executable
+mkdir -p "../AppDir/usr/bin"
+cp src/woeusbgui "../AppDir/usr/bin/"
+chmod +x "../AppDir/usr/bin/woeusbgui"
 
 # Step 4: Copy data and locale directories
 cp -r src/WoeUSB/data "../AppDir/usr/lib/python${PYVER}/site-packages/WoeUSB/"
@@ -46,11 +51,12 @@ cp "miscellaneous/woeusb-logo.png" "../AppDir/"
 mkdir -p "../AppDir/usr/share/polkit-1/actions"
 cp "miscellaneous/com.github.woeusb.woeusb-ng.policy" "../AppDir/usr/share/polkit-1/actions/"
 
-# Step 8: Create AppRun launcher (preserve AppImage env vars)
+# Step 8: Create AppRun launcher (dynamic PYVER)
 cat > "../AppDir/AppRun" << 'EOF'
 #!/bin/bash
 HERE="$(dirname "$(readlink -f "${0}")")"
-export PYTHONPATH="$HERE/usr/lib/python3.12/site-packages:$PYTHONPATH"
+PYVER=$(python3 -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')
+export PYTHONPATH="$HERE/usr/lib/python${PYVER}/site-packages:$PYTHONPATH"
 exec python3 "$HERE/usr/bin/woeusbgui" "$@"
 EOF
 chmod +x "../AppDir/AppRun"
@@ -60,5 +66,5 @@ cd ..
 wget -O "appimagetool-x86_64.AppImage" \
 "https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage"
 chmod +x "appimagetool-x86_64.AppImage"
-APPIMAGE_EXTRACT_AND_RUN=1 ARCH=x86_64 ./appimagetool-x86_64.AppImage "AppDir" "WoeUSB-ng-x86_64.AppImage"
 
+APPIMAGE_EXTRACT_AND_RUN=1 ARCH=x86_64 ./appimagetool-x86_64.AppImage "AppDir" "WoeUSB-ng-x86_64.AppImage"
