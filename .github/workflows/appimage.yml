@@ -13,36 +13,36 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
+        
       - name: Refresh pacman DB and install build dependencies
         run: |
           pacman -Syu --noconfirm
           pacman -S --noconfirm \
-            base-devel \
-            python \
-            python-build \ 
-            python-pip \
-            python-virtualenv \
-            python-setuptools \
-            python-wheel \
-            python-wxpython \
-            wget \
-            xz \
-            patchelf \
-            gtk3 \
-            libjpeg-turbo \
-            libtiff \
-            libpng \
-            expat \
-            curl \
-            libx11 \
-            libxext \
-            libxinerama \
-            libxcursor \
-            libxrandr \
-            libxi \
-            fuse2 \
+            base-devel
+            python
+            python-build
+            python-pip
+            python-virtualenv
+            python-setuptools
+            python-wheel
+            wget
+            xz
+            patchelf
+            gtk3
+            libjpeg-turbo
+            libtiff
+            libpng
+            expat
+            curl
+            libx11
+            libxext
+            libxinerama
+            libxcursor
+            libxrandr
+            libxi
+            fuse2
             git
+
 
       - name: Make AppImage script executable
         run: chmod +x pkg/appimage.sh
