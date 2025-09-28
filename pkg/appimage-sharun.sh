@@ -21,10 +21,12 @@ pip install --upgrade pip installer setuptools wheel build termcolor
 python3 -m build --wheel --no-isolation
 python3 -m installer --prefix="../AppDir/usr" dist/*.whl
 
-# Step 3b: Ensure WoeUSB sources are copied (fix missing module issue)
+# Step 3b: Copy WoeUSB source folder properly (fix missing module)
 PYVER=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
 mkdir -p "../AppDir/usr/lib/python${PYVER}/site-packages/"
 cp -r src/WoeUSB "../AppDir/usr/lib/python${PYVER}/site-packages/"
+# Ensure __init__.py exists
+touch "../AppDir/usr/lib/python${PYVER}/site-packages/WoeUSB/__init__.py"
 
 # Step 3c: Copy woeusbgui executable
 mkdir -p "../AppDir/usr/bin"
