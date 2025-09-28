@@ -12,28 +12,24 @@ cd "WoeUSB-ng"
 wget -O "pr79.patch" "https://gitlab.com/chaotic-aur/pkgbuilds/-/raw/main/woeusb-ng/pr79.patch"
 patch --forward --strip=1 < pr79.patch || true
 
-# Step 2: Create a virtual environment for build tools
-python3 -m venv .venv
-source .venv/bin/activate
-pip install --upgrade pip installer setuptools wheel build termcolor
-
-# Step 3: Build wheel and install into AppDir/usr
-python3 -m build --wheel --no-isolation
-python3 -m installer --prefix="../AppDir/usr" dist/*.whl
-
-# Step 3b: Copy WoeUSB source folder properly (fix missing module)
+# Step 2: Detect Python version
 PYVER=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+
+# Step 3: Copy WoeUSB source into AppDir
 mkdir -p "../AppDir/usr/lib/python${PYVER}/site-packages/"
 cp -r src/WoeUSB "../AppDir/usr/lib/python${PYVER}/site-packages/"
 # Ensure __init__.py exists
 touch "../AppDir/usr/lib/python${PYVER}/site-packages/WoeUSB/__init__.py"
 
-# Step 4: Copy data and locale directories
-cp -r src/WoeUSB/data "../AppDir/usr/lib/python${PYVER}/site-packages/WoeUSB/"
-cp -r src/WoeUSB/locale "../AppDir/usr/lib/python${PYVER}/site-packages/WoeUSB/"
-
-# Done with build tools, deactivate venv
-deactivate
+# Step 4: Create a small woeusbgui launcher in AppDir/usr/bin
+mkdir -p "../AppDir/usr/bin"
+cat > "../AppDir/usr/bin/woeusbgui" << 'EOF'
+#!/bin/bash
+PYVER=$(python3 -c "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')")
+export PYTHONPATH="$(dirname "$(dirname "$(readlink -f "${0}")")")/lib/python${PYVER}/site-packages:$PYTHONPATH"
+exec python3 -m WoeUSB.gui "$@"
+EOF
+chmod +x "../AppDir/usr/bin/woeusbgui"
 
 # Step 5: Copy desktop file
 mkdir -p "../AppDir/usr/share/applications"
@@ -48,7 +44,7 @@ cp "miscellaneous/woeusb-logo.png" "../AppDir/"
 mkdir -p "../AppDir/usr/share/polkit-1/actions"
 cp "miscellaneous/com.github.woeusb.woeusb-ng.policy" "../AppDir/usr/share/polkit-1/actions/"
 
-# Step 8: Create AppRun launcher (dynamic PYVER)
+# Step 8: Create AppRun launcher
 cat > "../AppDir/AppRun" << 'EOF'
 #!/bin/bash
 HERE="$(dirname "$(readlink -f "${0}")")"
