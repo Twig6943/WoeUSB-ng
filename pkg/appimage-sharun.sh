@@ -3,7 +3,7 @@ set -e
 
 # Remove any previous build
 rm -rf "./WoeUSB-ng-build"
-mkdir -p "./WoeUSB-ng-build/AppDir/usr/bin"
+mkdir -p "./WoeUSB-ng-build/AppDir/usr"
 
 # Step 1: Clone repository and apply patch
 cd "./WoeUSB-ng-build"
@@ -27,11 +27,6 @@ mkdir -p "../AppDir/usr/lib/python${PYVER}/site-packages/"
 cp -r src/WoeUSB "../AppDir/usr/lib/python${PYVER}/site-packages/"
 # Ensure __init__.py exists
 touch "../AppDir/usr/lib/python${PYVER}/site-packages/WoeUSB/__init__.py"
-
-# Step 3c: Copy woeusbgui executable
-mkdir -p "../AppDir/usr/bin"
-cp src/woeusbgui "../AppDir/usr/bin/"
-chmod +x "../AppDir/usr/bin/woeusbgui"
 
 # Step 4: Copy data and locale directories
 cp -r src/WoeUSB/data "../AppDir/usr/lib/python${PYVER}/site-packages/WoeUSB/"
