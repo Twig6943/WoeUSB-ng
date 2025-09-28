@@ -35,6 +35,7 @@ python3 -m build --wheel --no-isolation
 python3 -m installer --prefix="../AppDir/usr" dist/*.whl
 
 # Step 3b: Copy data and locale directories manually
+mkdir -p ../AppDir/usr/lib/python3.12/site-packages/WoeUSB
 cp -r src/WoeUSB/data ../AppDir/usr/lib/python3.12/site-packages/WoeUSB/
 cp -r src/WoeUSB/locale ../AppDir/usr/lib/python3.12/site-packages/WoeUSB/
 
