@@ -18,31 +18,30 @@ jobs:
         run: |
           pacman -Syu --noconfirm
           pacman -S --noconfirm \
-            base-devel
-            python
-            python-build
-            python-pip
-            python-virtualenv
-            python-setuptools
-            python-wheel
-            wget
-            xz
-            patchelf
-            gtk3
-            libjpeg-turbo
-            libtiff
-            libpng
-            expat
-            curl
-            libx11
-            libxext
-            libxinerama
-            libxcursor
-            libxrandr
-            libxi
-            fuse2
+            base-devel \
+            python \
+            python-build \
+            python-pip \
+            python-virtualenv \
+            python-setuptools \
+            python-wheel \
+            wget \
+            xz \
+            patchelf \
+            gtk3 \
+            libjpeg-turbo \
+            libtiff \
+            libpng \
+            expat \
+            curl \
+            libx11 \
+            libxext \
+            libxinerama \
+            libxcursor \
+            libxrandr \
+            libxi \
+            fuse2 \
             git
-            
             ln -sf /usr/bin/python3 /usr/bin/python
 
       - name: Make AppImage script executable
