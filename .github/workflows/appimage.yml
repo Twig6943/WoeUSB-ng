@@ -22,7 +22,6 @@ jobs:
             python \
             python-build \ 
             python-pip \
-            python-pip \
             python-virtualenv \
             python-setuptools \
             python-wheel \
