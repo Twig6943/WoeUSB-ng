@@ -42,7 +42,8 @@ jobs:
             libxi
             fuse2
             git
-
+            
+            ln -sf /usr/bin/python3 /usr/bin/python
 
       - name: Make AppImage script executable
         run: chmod +x pkg/appimage.sh
